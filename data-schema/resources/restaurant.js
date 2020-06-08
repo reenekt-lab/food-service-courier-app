@@ -7,19 +7,20 @@ const restaurant = {
   //   title: 'Рестораны'
   // },
 
-  accessAbility (context) {
-    if (process.client) {
-      const { nuxtState, route, redirect } = context
-      if (route.name !== 'restaurant') {
-        return () => {
-          return redirect({ name: 'restaurant' })
-        }
-      }
-      return context.app.$auth.user.restaurant_id === nuxtState.data[0].entity.restaurant_id
-    }
-    return () => {
-      context.redirect({ name: 'restaurant' })
-    }
+  // Middleware abilities
+  createAbility: false,
+  editAbility (context) {
+    return false
+  },
+  // Page abilities
+  canCreate (user) {
+    return false
+  },
+  canEdit (user, entity) {
+    return false
+  },
+  canDelete (user, entity) {
+    return false
   },
 
   titles: {

@@ -26,12 +26,12 @@ const order = {
       const { nuxtState, redirect } = context
       if (!nuxtState.data[0] || !nuxtState.data[0].entity) {
         return () => {
-          return redirect({ name: 'order', params: { type: 'processing' } })
+          return redirect({ name: 'order', params: { type: 'delivering' } })
         }
       }
-      if (context.app.$auth.user.restaurant_id !== nuxtState.data[0].entity.restaurant_id) {
+      if (context.app.$auth.user.id !== nuxtState.data[0].entity.courier_id) {
         return () => {
-          return redirect({ name: 'order', params: { type: 'processing' } })
+          return redirect({ name: 'order', params: { type: 'delivering' } })
         }
       }
 
@@ -39,13 +39,13 @@ const order = {
       return true
     }
     return () => {
-      return context.redirect({ name: 'order', params: { type: 'processing' } })
+      return context.redirect({ name: 'order', params: { type: 'delivering' } })
     }
   },
   getRedirectCallback (context) {
     if (context.route.name !== 'order-type') {
       return () => {
-        context.redirect({ name: 'order-type', params: { type: 'processing' } })
+        context.redirect({ name: 'order-type', params: { type: 'delivering' } })
       }
     }
     return null
@@ -61,7 +61,7 @@ const order = {
   },
   endpointRequestConfig: {
     params: {
-      restaurant: '{{ auth.user.restaurant_id }}'
+      courier: '{{ auth.user.id }}'
     }
   },
   enumerations: {

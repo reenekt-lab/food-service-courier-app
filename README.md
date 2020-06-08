@@ -1,6 +1,6 @@
-# food-service-restaurant-manager
+# food-service-courier
 
-> Application for restaurant managers
+> Application for [ food service's ] couriers
 
 ## Build Setup
 

@@ -7,7 +7,7 @@
           class="my-2"
           color="primary"
           outlined
-          :to="{ name: 'restaurant-manager' }"
+          :to="{ name: 'courier' }"
           nuxt
           exact
         >
@@ -193,11 +193,9 @@ export default {
   },
   mixins: [validationMixin, entityWatchersMixin, relatedResourcesDataLoaderMixin],
 
-  middleware: ['data-schema-access-edit'],
-
   async asyncData ({ app, error, $axios, params }) {
     const entityLoadData = {
-      name: 'restaurant-manager',
+      name: 'courier',
       id: app.$auth.user.id
     }
 
@@ -345,7 +343,7 @@ export default {
     }
 
     // reload resourceData (fixes methods load, earlier they was loaded as string)
-    this.$dataSchema.loadResource('restaurant-manager')
+    this.$dataSchema.loadResource('courier')
       .then((resourceData) => {
         this.resourceData = resourceData
         this.validations = resourceData.validations

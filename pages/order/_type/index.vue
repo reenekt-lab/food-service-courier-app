@@ -40,7 +40,7 @@
           :server-items-length="entities.meta.total"
           :headers="tableHeaders"
           :items="entities.data"
-          :show-expand="$route.params.type === 'new' || $route.params.type === 'processing'"
+          :show-expand="$route.params.type === 'delivering'"
           single-expand
           :items-per-page="15"
           disable-filtering
@@ -102,73 +102,29 @@
           </template>
 
           <template
-            v-if="$route.params.type === 'new' || $route.params.type === 'processing'"
+            v-if="$route.params.type === 'new' || $route.params.type === 'delivering'"
             #expanded-item="{ headers, item }"
           >
             <td :colspan="headers.length">
               <div v-if="$route.params.type === 'new'">
-                <v-btn
+                <!--<v-btn
                   color="primary"
                   :loading="orderProcessing"
                   @click="acceptOrder(item)"
                 >
                   Взять в работу
-                </v-btn>
+                </v-btn>-->
               </div>
-              <div v-if="$route.params.type === 'processing'">
-                <div class="d-flex justify-center align-center flex-wrap">
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      md="10"
-                      :offset-md="1"
-                    >
-                      <v-select
-                        v-model="selectedCourierToDeliver"
-                        :items="relatedResourcesData.courier.data"
-                        :loading="relatedResourcesData.courier.loading"
-                        placeholder="Выберите курьера"
-                        item-text="first_name"
-                        item-value="id"
-                        hide-details
-                      />
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="10"
-                      :offset-md="1"
-                      class="d-flex justify-center"
-                    >
-                      <v-btn
-                        color="primary"
-                        :disabled="!selectedCourierToDeliver"
-                        :loading="orderProcessing"
-                        @click="transferToDelivery(item, selectedCourierToDeliver)"
-                      >
-                        Передать курьеру
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-
-                  <div v-if="false" class="d-flex align-center my-6" style="width: 100%;">
-                    <v-divider style="margin-right: 1.5rem;" />
-                    <span>Или</span>
-                    <v-divider style="margin-left: 1.5rem;" />
-                  </div>
-
-                  <v-row v-if="false">
-                    <v-col
-                      cols="12"
-                      md="10"
-                      :offset-md="1"
-                    >
-                      <v-select
-                        :items="[]"
-                        placeholder="TODO: добавить кнопку для поиска свободного курьера для доставки"
-                      />
-                    </v-col>
-                  </v-row>
-                </div>
+              <div v-if="$route.params.type === 'delivering'">
+                <v-btn
+                  color="primary"
+                  :loading="orderProcessing"
+                  title="Отметить заказ как доставленный"
+                  :block="$vuetify.breakpoint.xsOnly"
+                  @click="finishOrder(item)"
+                >
+                  Завершить доставку
+                </v-btn>
               </div>
             </td>
           </template>
@@ -271,7 +227,7 @@ export default {
       if (!actionFieldExists) {
         headers.push({ text: 'Действия', value: 'actions' })
       }
-      if (this.$route.params.type === 'new' || this.$route.params.type === 'processing') {
+      if (this.$route.params.type === 'new' || this.$route.params.type === 'delivering') {
         const expandFieldExists = headers.find((elem) => {
           return elem.value === 'data-table-expand'
         })
@@ -328,10 +284,7 @@ export default {
       }
 
       if (this.$route.params.type === 'new') {
-        axiosConfig.params.status = 'created' // backend's status
-      }
-      if (this.$route.params.type === 'processing') {
-        axiosConfig.params.status = 'cooking' // backend's status
+        axiosConfig.params.status = 'cooked' // backend's status // todo it later (for free couriers)
       }
       if (this.$route.params.type === 'delivering') {
         axiosConfig.params.status = 'delivering' // backend's status

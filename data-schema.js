@@ -36,19 +36,14 @@ const drawerMenuItems = [
       icon: 'mdi-store-outline',
       title: 'Заказы',
       items: [
-        {
-          icon: 'mdi-clipboard-plus-outline',
-          title: 'Новые заказы',
-          to: { name: 'order-type', params: { type: 'new' } }
-        },
-        {
-          icon: 'mdi-clipboard-text-multiple-outline',
-          title: 'Заказы в работе',
-          to: { name: 'order-type', params: { type: 'processing' } }
-        },
+        // {
+        //   icon: 'mdi-clipboard-plus-outline',
+        //   title: 'Новые заказы',
+        //   to: { name: 'order-type', params: { type: 'new' } }
+        // },
         {
           icon: 'mdi-truck-delivery-outline',
-          title: 'В доставке', // "Заказы в доставке" не умещается
+          title: 'Заказы в работе',
           to: { name: 'order-type', params: { type: 'delivering' } }
         }
       ]
@@ -56,48 +51,20 @@ const drawerMenuItems = [
   ],
   [
     {
+      condition (auth) {
+        if (!auth) {
+          return false
+        }
+        return auth.check() && auth.user.restaurant_id
+      },
       icon: 'mdi-table-chair',
       title: 'Мой ресторан',
       to: { name: 'restaurant' }
     },
     {
-      icon: 'mdi-silverware-fork-knife',
-      title: 'Еда / напитки',
-      to: { name: 'entity', params: { entity: 'food' } }
-    },
-    {
       icon: 'mdi-account-circle',
       title: 'Профиль',
-      to: { name: 'restaurant-manager' }
-    }
-  ],
-  [
-    {
-      icon: 'mdi-silverware',
-      title: 'Категории ресторанов',
-      to: { name: 'entity', params: { entity: 'common-category' } }
-    },
-    {
-      icon: 'mdi-silverware-fork-knife',
-      title: 'Категории еды / напитков',
-      to: { name: 'entity', params: { entity: 'food-category' } }
-    },
-    {
-      icon: 'mdi-silverware-fork-knife',
-      title: 'Теги еды / напитков',
-      to: { name: 'entity', params: { entity: 'food-tag' } }
-    }
-  ],
-  [
-    {
-      icon: 'mdi-account-circle',
-      title: 'Курьеры',
-      to: { name: 'entity', params: { entity: 'courier' } }
-    },
-    {
-      icon: 'mdi-account-circle',
-      title: 'Клиенты',
-      to: { name: 'entity', params: { entity: 'customer' } }
+      to: { name: 'courier' }
     }
   ]
 ]

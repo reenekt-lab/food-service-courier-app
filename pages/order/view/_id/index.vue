@@ -38,7 +38,7 @@
           class="my-2"
           color="primary"
           outlined
-          :to="{name: 'order-type', params: { 'type': 'processing' }}"
+          :to="{name: 'order-type', params: { 'type': 'delivering' }}"
           nuxt
           exact
         >
@@ -130,10 +130,10 @@
         </v-card>
 
         <v-card
-          v-if="entity.status === 'created' || entity.status === 'cooking'"
+          v-if="entity.status === 'cooked' || entity.status === 'delivering'"
           class="mt-2"
         >
-          <v-card-text v-if="entity.status === 'created'">
+          <v-card-text v-if="entity.status === 'cooked'">
             <v-btn
               color="primary"
               :loading="orderProcessing"
@@ -142,59 +142,24 @@
               Взять в работу
             </v-btn>
           </v-card-text>
-          <v-card-text v-if="entity.status === 'cooking'">
+          <v-card-text v-if="entity.status === 'delivering'">
             <div class="d-flex justify-center align-center flex-wrap">
-              <v-row>
-                <v-col
-                  cols="12"
-                  md="10"
-                  :offset-md="1"
-                >
-                  <v-select
-                    v-model="selectedCourierToDeliver"
-                    :items="relatedResourcesData.courier_own.data"
-                    :loading="relatedResourcesData.courier_own.loading"
-                    placeholder="Выберите курьера"
-                    item-text="first_name"
-                    item-value="id"
-                    hide-details
-                  />
-                </v-col>
-                <v-col
-                  cols="12"
-                  md="10"
-                  :offset-md="1"
-                  class="d-flex justify-center"
-                >
+              <div class="d-flex flex-column">
+                <div class="d-flex justify-center">
                   <v-btn
                     color="primary"
-                    :disabled="!selectedCourierToDeliver"
                     :loading="orderProcessing"
-                    @click="transferToDelivery(entity, selectedCourierToDeliver)"
+                    title="Отметить заказ как доставленный"
+                    :block="$vuetify.breakpoint.xsOnly"
+                    @click="finishOrder(entity)"
                   >
-                    Передать курьеру
+                    Завершить доставку
                   </v-btn>
-                </v-col>
-              </v-row>
-
-              <div v-if="false" class="d-flex align-center my-6" style="width: 100%;">
-                <v-divider style="margin-right: 1.5rem;" />
-                <span>Или</span>
-                <v-divider style="margin-left: 1.5rem;" />
+                </div>
+                <div class="text--secondary mt-2 text-center">
+                  Нажмите эту кнопку после того, как передадите заказ клиенту
+                </div>
               </div>
-
-              <v-row v-if="false">
-                <v-col
-                  cols="12"
-                  md="10"
-                  :offset-md="1"
-                >
-                  <v-select
-                    :items="[]"
-                    placeholder="TODO: добавить кнопку для поиска свободного курьера для доставки"
-                  />
-                </v-col>
-              </v-row>
             </div>
           </v-card-text>
         </v-card>
@@ -250,7 +215,7 @@ export default {
     // todo move next line to doc page/file
     // details: https://axios.nuxtjs.org/usage.html#shortcuts
     const data = await $axios.$get(resourceData.getResourceEndpoint(params.id))
-    if (data.data.restaurant_id !== app.$auth.user.restaurant_id) {
+    if (data.data.courier_id !== app.$auth.user.id) {
       redirect({ name: 'order', params: { type: 'processing' } })
     }
 

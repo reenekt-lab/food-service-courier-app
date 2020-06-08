@@ -11,7 +11,7 @@
         >
           <v-card>
             <v-card-title class="headline" style="word-break: break-word;">
-              Добро пожаловать в приложение для управления рестораном
+              Добро пожаловать в приложение для курьеров
             </v-card-title>
             <v-card-text>
               <p>Все доступные разделы можно увидеть в левом меню. Чтобы открыть меню нажмите на кнопку <v-icon>mdi-menu</v-icon> в верхнем левом углу.</p>
@@ -30,30 +30,62 @@
     </v-container>
     <v-container>
       <v-row dense>
+        <!-- eslint-disable -->
+<!--        <v-col-->
+<!--          :cols="12"-->
+<!--          :sm="6"-->
+<!--        >-->
+<!--          <v-card-->
+<!--            color="light-blue lighten-5"-->
+<!--            :loading="newOrdersCountLoading"-->
+<!--          >-->
+<!--            <v-card-title>Доступные заказы</v-card-title>-->
+<!--            <v-card-text v-if="newOrdersCountLoading">-->
+<!--              Считаем количество доступных заказов-->
+<!--            </v-card-text>-->
+<!--            <v-card-text v-else-if="newOrdersCount">-->
+<!--              Вам ДОСТУПНО(todo как следующие) <b>{{ newOrdersCount }}</b> {{ getCounterWordForm('new', newOrdersCount) }} {{ getCounterWordForm('order', newOrdersCount) }}-->
+<!--            </v-card-text>-->
+<!--            <v-card-text v-else>-->
+<!--              Нет заказов, которые можно взять в работу-->
+<!--            </v-card-text>-->
+<!--            <v-card-actions>-->
+<!--              <v-spacer />-->
+<!--              <v-btn-->
+<!--                text-->
+<!--                nuxt-->
+<!--                :to="{ name: 'order-type', params: { type: 'cooked' } }"-->
+<!--              >-->
+<!--                Перейти-->
+<!--              </v-btn>-->
+<!--            </v-card-actions>-->
+<!--          </v-card>-->
+<!--        </v-col>-->
+        <!-- eslint-enable -->
         <v-col
           :cols="12"
           :sm="6"
         >
           <v-card
-            color="light-blue lighten-5"
-            :loading="newOrdersCountLoading"
+            color="teal lighten-5"
+            :loading="deliveringOrdersCountLoading"
           >
-            <v-card-title>Новые заказы</v-card-title>
-            <v-card-text v-if="newOrdersCountLoading">
-              Считаем количество новых заказов
+            <v-card-title>Заказы в работе</v-card-title>
+            <v-card-text v-if="deliveringOrdersCountLoading">
+              Считаем количество заказов, которые вы доставляете
             </v-card-text>
-            <v-card-text v-else-if="newOrdersCount">
-              У вас <b>{{ newOrdersCount }}</b> {{ getCounterWordForm('new', newOrdersCount) }} {{ getCounterWordForm('order', newOrdersCount) }}
+            <v-card-text v-else-if="deliveringOrdersCount">
+              Сейчас вы доставляете <b>{{ deliveringOrdersCount }}</b> {{ getCounterWordForm('order', deliveringOrdersCount) }}
             </v-card-text>
             <v-card-text v-else>
-              Новых заказов нет
+              Нет заказов в работе
             </v-card-text>
             <v-card-actions>
               <v-spacer />
               <v-btn
                 text
                 nuxt
-                :to="{ name: 'order-type', params: { type: 'new' } }"
+                :to="{ name: 'order-type', params: { type: 'delivering' } }"
               >
                 Перейти
               </v-btn>
@@ -65,29 +97,32 @@
           :sm="6"
         >
           <v-card
-            color="teal lighten-5"
-            :loading="processingOrdersCountLoading"
+            color="blue lighten-5"
+            :loading="deliveredOrdersCountLoading"
+            height="100%"
           >
-            <v-card-title>Заказы в работе</v-card-title>
-            <v-card-text v-if="processingOrdersCountLoading">
-              Считаем количество заказов в работе
+            <v-card-title>Доставлено заказов</v-card-title>
+            <v-card-text v-if="deliveredOrdersCountLoading">
+              Считаем количество заказов, которые вы уже доставили
             </v-card-text>
-            <v-card-text v-else-if="processingOrdersCount">
-              У вас <b>{{ processingOrdersCount }}</b> {{ getCounterWordForm('order', processingOrdersCount) }} в процессе приготовления
+            <v-card-text v-else-if="deliveredOrdersCount">
+              Вы доставили уже <b>{{ deliveredOrdersCount }}</b> {{ getCounterWordForm('order', deliveredOrdersCount) }}
             </v-card-text>
             <v-card-text v-else>
-              Нет заказов в работе
+              Вы еще не доставили ни один заказ
             </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn
-                text
-                nuxt
-                :to="{ name: 'order-type', params: { type: 'processing' } }"
-              >
-                Перейти
-              </v-btn>
-            </v-card-actions>
+            <!-- eslint-disable -->
+<!--            <v-card-actions>-->
+<!--              <v-spacer />-->
+<!--              <v-btn-->
+<!--                text-->
+<!--                nuxt-->
+<!--                :to="{ name: 'order-type', params: { type: 'delivered' } }"-->
+<!--              >-->
+<!--                Перейти-->
+<!--              </v-btn>-->
+<!--            </v-card-actions>-->
+            <!-- eslint-enable -->
           </v-card>
         </v-col>
       </v-row>
@@ -104,8 +139,10 @@ export default {
     return {
       newOrdersCountLoading: 'light-blue',
       newOrdersCount: 0,
-      processingOrdersCountLoading: 'teal',
-      processingOrdersCount: 0,
+      deliveringOrdersCountLoading: 'teal',
+      deliveringOrdersCount: 0,
+      deliveredOrdersCountLoading: 'teal',
+      deliveredOrdersCount: 0,
       counterWordForms: {
         order: {
           lastIsOne: 'заказ',
@@ -126,8 +163,8 @@ export default {
         const apiEndpoint = resource.apiPath
         this.$axios.get(apiEndpoint, {
           params: {
-            status: 'created',
-            restaurant: this.$auth.user.restaurant_id
+            status: 'cooked',
+            courier: this.$auth.user.id
           }
         })
           .then((response) => {
@@ -138,15 +175,27 @@ export default {
           })
         this.$axios.get(apiEndpoint, {
           params: {
-            status: 'cooking',
-            restaurant: this.$auth.user.restaurant_id
+            status: 'delivering',
+            courier: this.$auth.user.id
           }
         })
           .then((response) => {
-            this.processingOrdersCount = response.data.meta.total
+            this.deliveringOrdersCount = response.data.meta.total
           })
           .finally(() => {
-            this.processingOrdersCountLoading = false
+            this.deliveringOrdersCountLoading = false
+          })
+        this.$axios.get(apiEndpoint, {
+          params: {
+            status: 'delivered',
+            courier: this.$auth.user.id
+          }
+        })
+          .then((response) => {
+            this.deliveredOrdersCount = response.data.meta.total
+          })
+          .finally(() => {
+            this.deliveredOrdersCountLoading = false
           })
       })
   },

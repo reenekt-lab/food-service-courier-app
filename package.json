@@ -1,7 +1,7 @@
 {
-  "name": "food-service-restaurant-manager",
+  "name": "food-service-courier",
   "version": "1.0.0",
-  "description": "Application for restaurant managers",
+  "description": "Application for food service's couriers",
   "author": "Andrew Sementsov",
   "private": true,
   "scripts": {

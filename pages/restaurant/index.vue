@@ -2,16 +2,6 @@
   <v-container>
     <v-row>
       <v-col :cols="12">
-        <v-btn
-          class="my-2"
-          color="secondary"
-          outlined
-          :to="{ name: 'restaurant-edit' }"
-          nuxt
-          exact
-        >
-          Редактировать
-        </v-btn>
         <v-card>
           <v-card-text>
             <v-simple-table>
@@ -110,10 +100,14 @@ export default {
     DynamicTable
   },
   mixins: [relatedResourcesDataLoaderMixin],
-  async asyncData ({ app, error, $axios, params }) {
+  async asyncData ({ app, error, $axios, redirect, params }) {
     const entityLoadData = {
       name: 'restaurant',
       id: app.$auth.user.restaurant_id
+    }
+
+    if (!app.$auth.user.restaurant_id) {
+      redirect('/')
     }
 
     const resourceData = await app.$dataSchema.loadResource(entityLoadData.name)

@@ -30,6 +30,30 @@ export default {
             })
         })
     },
+    finishOrder (order) {
+      this.orderProcessing = true
+
+      const url = this.resourceData.getResourceEndpoint(order.id)
+      const data = {
+        status: 'delivered',
+        _method: 'PUT'
+      }
+      let loadDataMethod = this.loadEntityData
+      if (!this.loadEntityData && this.loadPageData) {
+        loadDataMethod = this.loadPageData
+      }
+      this.$axios.post(url, data)
+        .then((response) => {
+          this.snackbar.color = 'success'
+          this.snackbar.active = true
+          this.snackbar.item = order
+          this.snackbar.text = 'Заказ завершен'
+          loadDataMethod(this.currentPage)
+            .then(() => {
+              this.orderProcessing = false
+            })
+        })
+    },
     transferToDelivery (order, courierId) {
       this.orderProcessing = true
 

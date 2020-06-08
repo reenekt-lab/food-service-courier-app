@@ -12,7 +12,7 @@ const courier = {
   editAbility (context) {
     if (process.client) {
       const { nuxtState } = context
-      return context.app.$auth.user.restaurant_id === nuxtState.data[0].entity.restaurant_id
+      return context.app.$auth.user.id === nuxtState.data[0].entity.id
     }
     return false
   },
@@ -21,10 +21,25 @@ const courier = {
     return true
   },
   canEdit (user, entity) {
-    return user.restaurant_id === entity.restaurant_id
+    return user.id === entity.id
   },
   canDelete (user, entity) {
-    return user.restaurant_id === entity.restaurant_id
+    return false
+  },
+
+  accessAbility (context) {
+    if (process.client) {
+      const { nuxtState, route, redirect } = context
+      if (route.name !== 'courier') {
+        return () => {
+          return redirect({ name: 'courier' })
+        }
+      }
+      return context.app.$auth.user.restaurant_id === nuxtState.data[0].entity.restaurant_id
+    }
+    return () => {
+      context.redirect({ name: 'courier' })
+    }
   },
 
   titles: {
@@ -36,10 +51,7 @@ const courier = {
     return `${this.apiPath}/${id}`
   },
   endpointRequestConfig: {
-    params: {
-      restaurant: '{{ auth.user.restaurant_id }}',
-      include_free_couriers: true
-    }
+    params: {}
   },
   headers: [
     { text: 'ID', value: 'id' },
@@ -107,7 +119,6 @@ const courier = {
       }
     },
     restaurant_id: {
-      default: '{{ auth.user.restaurant_id }}',
       disabled: true,
       visible: false,
       label: 'Ресторан',

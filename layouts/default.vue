@@ -27,7 +27,7 @@
               v-for="(item, i) in group"
             >
               <v-list-item
-                v-if="!item.group"
+                v-if="!item.group && (item.condition === undefined || item.condition($auth))"
                 :key="`group_${gi}_item_${i}`"
                 :to="item.to"
                 nuxt
@@ -64,9 +64,6 @@
                   router
                   exact
                 >
-<!--                  <v-list-item-icon>-->
-<!--                    <v-icon v-text="subItem.icon" />-->
-<!--                  </v-list-item-icon>-->
                   <v-list-item-content>
                     <v-list-item-title v-text="subItem.title" />
                   </v-list-item-content>
@@ -75,7 +72,6 @@
                   </v-list-item-icon>
                 </v-list-item>
               </v-list-group>
-
             </template>
             <v-divider v-if="gi < (items.length - 1)" :key="`divider_${gi}`" />
           </template>

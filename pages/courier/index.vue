@@ -6,7 +6,7 @@
           class="my-2"
           color="secondary"
           outlined
-          :to="{ name: 'restaurant-manager-edit' }"
+          :to="{ name: 'courier-edit' }"
           nuxt
           exact
         >
@@ -113,7 +113,7 @@ export default {
   mixins: [relatedResourcesDataLoaderMixin],
   async asyncData ({ app, error, $axios, params }) {
     const entityLoadData = {
-      name: 'restaurant-manager',
+      name: 'courier',
       id: app.$auth.user.id
     }
 

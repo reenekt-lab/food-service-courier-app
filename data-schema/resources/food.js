@@ -6,24 +6,21 @@ const food = {
   //   icon: 'mdi-table-chair',
   //   title: 'Рестораны'
   // },
+
   // Middleware abilities
-  createAbility: true,
+  createAbility: false,
   editAbility (context) {
-    if (process.client) {
-      const { nuxtState } = context
-      return context.app.$auth.user.restaurant_id === nuxtState.data[0].entity.restaurant_id
-    }
     return false
   },
   // Page abilities
   canCreate (user) {
-    return true
+    return false
   },
   canEdit (user, entity) {
-    return user.restaurant_id === entity.restaurant_id
+    return false
   },
   canDelete (user, entity) {
-    return user.restaurant_id === entity.restaurant_id
+    return false
   },
 
   titles: {
