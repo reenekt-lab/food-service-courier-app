@@ -221,6 +221,9 @@ export default {
     window.addEventListener('pwa-prompt-caught', (event) => {
       this.showPwaPromptCard = this.$pwaInstaller.canBeInstalled
     })
+    if (window.pwaInfo) {
+      this.showPwaPromptCard = window.pwaInfo.canBeInstalled
+    }
   },
   methods: {
     async logout () {
